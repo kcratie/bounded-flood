@@ -1,0 +1,18 @@
+---
+- hosts: banter
+  tasks:
+  - name: Copy cases file
+    copy:
+      src: ~/workspace/experiment/test-link-utilization/{{ item }}
+      dest: ~/workspace/experiment/test-link-utilization/
+    with_items:
+      ["{{ inventory_hostname }}-cases", "lu.sh"]
+  - name: Setting script execute mode
+    file:
+      path: ~/workspace/experiment/test-link-utilization/lu.sh
+      mode: u+rwx,g-w,o-rwx      
+  - name: Latency and Bandwidth Test
+    shell: ./lu.sh rhi ./{{ inventory_hostname }}-cases
+    args:
+      chdir: ~/workspace/experiment/test-link-utilization
+    become: no

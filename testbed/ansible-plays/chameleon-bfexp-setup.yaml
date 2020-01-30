@@ -1,0 +1,33 @@
+---
+- hosts: chameleon
+  tasks:
+  - name: Creating directories
+    file:
+      state: directory
+      path: /home/cc/workspace/experiment
+  - name: Copying experiment archive
+    copy:
+      src: /home/kcratie/workspace/experiment.tar.gz
+      dest: /home/cc/workspace/experiment.tar.gz
+      owner: cc
+  - name: Extracting experiment archive
+    unarchive:
+      remote_src: yes
+      src: /home/cc/workspace/experiment.tar.gz
+      dest: /home/cc/workspace/
+  - name: Setting script mode
+    file:
+      path: /home/cc/workspace/experiment/{{item}}
+      mode: u+rwx,g-w,o-rwx
+    with_items:
+      ["setup.sh", "update-limits.sh"]
+  - name: Installing prereqs
+    shell: ./setup.sh prereqs
+    args:
+      chdir: /home/cc/workspace/experiment
+    become: yes
+  - name: Updating limits
+    shell: ./update-limits.sh
+    args:
+        chdir: /home/cc/workspace/experiment
+    become: yes    

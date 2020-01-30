@@ -1,0 +1,22 @@
+---
+- hosts: m900
+  tasks:
+  - name: Copy docker scripts
+    copy:
+      src: ~/workspace/experiment/docker/{{ item }}
+      dest: ~/workspace/experiment/docker/
+    with_items:
+      ["99fixbadproxy", "ipop.Dockerfile", "prereq.Dockerfile", "setup-prereqs.sh"]
+  - name: Setting script execute mode
+    file:
+      path: ~/workspace/experiment/docker/setup-prereqs.sh
+      mode: u+rwx,g-w,o-rwx      
+  - name: Copy amd64 deb-pak
+    copy:
+      src: ~/workspace/experiment/deb-pak/ipop-vpn_19.9.11_amd64.deb
+      dest: ~/workspace/experiment/docker/
+  - name: Updating container image
+    shell: ./setup.sh img
+    args:
+      chdir: ~/workspace/experiment
+    become: no

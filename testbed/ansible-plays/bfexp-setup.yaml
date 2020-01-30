@@ -1,0 +1,32 @@
+---
+- hosts: clab_1
+  tasks:
+  - name: Creating directories
+    file:
+      state: directory
+      path: ~/workspace/experiment
+  - name: Copying experiment archive
+    copy:
+      src: ~/workspace/experiment.tar.gz
+      dest: ~/workspace/experiment.tar.gz
+  - name: Extracting experiment archive
+    unarchive:
+      remote_src: yes
+      src: ~/workspace/experiment.tar.gz
+      dest: ~/workspace/
+  - name: Setting script mode
+    file:
+      path: ~/workspace/experiment/{{item}}
+      mode: u+rwx,g-w,o-rwx
+    with_items:
+      ["setup.sh", "update-limits.sh"]
+  - name: Installing prereqs
+    shell: ./setup.sh prereqs
+    args:
+      chdir: /users/kcratie/workspace/experiment
+    become: yes
+  - name: Updating limits
+    shell: ./update-limits.sh
+    args:
+        chdir: /users/kcratie/workspace/experiment
+    become: yes    

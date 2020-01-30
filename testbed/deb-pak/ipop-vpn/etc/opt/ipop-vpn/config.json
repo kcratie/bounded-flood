@@ -1,0 +1,77 @@
+{
+  "CFx": {
+    "Model": "Default",
+    "Overlays": [ "190911" ]
+  },
+  "Logger": {
+    "LogLevel": "INFO",
+    "Device": "File",
+    "Directory": "/var/log/ipop-vpn/",
+    "CtrlLogFileName": "ctrl.log",
+    "TincanLogFileName": "tincan_log",
+    "MaxFileSize": 10000000,
+    "MaxArchives": 1
+  },
+  "Signal": {
+    "Enabled": true,
+    "Overlays": {
+      "190911": {
+        "HostAddress": "",
+        "Port": "5222",
+        "Username": "",
+        "Password": "",
+        "AuthenticationMethod": "PASSWORD"
+      }
+    }
+  },
+  "Topology": {
+    "PeerDiscoveryCoalesce": 8,
+    "Overlays": {
+      "190911": {
+        "Name": "AppGroupA",
+        "Description": "Scalable Symphony Ring Overlay for Bounded Flooding.",
+        "MaxSuccessors": 2,
+        "MaxOnDemandEdges": 1,
+        "MaxConcurrentEdgeSetup": 5,
+        "Role": "Switch"
+      }
+    }
+  },
+  "LinkManager": {
+    "Dependencies": [ "Logger", "TincanInterface", "Signal" ],
+    "Stun": [ "stun.l.google.com:19302", "stun1.l.google.com:19302" ],
+    "Overlays": {
+      "190911": {
+        "Type": "TUNNEL",
+        "TapName": "tnl"
+      }
+    }
+  },
+  "OverlayVisualizer": {
+    "Enabled": true,
+    "TimerInterval": 45,
+    "WebServiceAddress": "34.209.33.166:5000",
+    "NodeName": "nd*"
+  },
+  "BridgeController": {
+    "Dependencies": [ "Logger", "LinkManager" ],
+    "SdnListenAddress": "",
+    "SdnListenPort": 5802,
+    "Overlays": {
+      "190911": {
+        "Type": "OVS",
+        "BridgeName": "ipopbr",
+        "IP4": "10.10.10.*",
+        "PrefixLen": 24,
+        "MTU": 1410,
+        "STP": false,
+        "AutoDelete": true,
+        "SDNController": {
+          "ConnectionType": "tcp",
+          "HostName": "127.0.0.1",
+          "Port": "6633"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+---
+- hosts: nodes
+  become: yes
+  become_method: sudo
+  tasks:
+  - name: Stop IPOP-VPN
+    systemd:
+      name: ipop
+      state: stopped
+  - name: Restart OVS
+    systemd:
+      name: openvswitch-switch
+      state: restarted    
+  - name: Remove file Bounded Flood log
+    file:
+      state: absent
+      path: /var/log/ipop-vpn/bf.log
+  - name: Copy BoundedFlood src
+    copy:
+      src: /home/kcratie/workspace/experiment/deb-pak/ipop-vpn/opt/ipop-vpn/controller/modules/BoundedFlood.py
+      dest: /opt/ipop-vpn/controller/modules/
+  - name: Waiting 2 seconds ...
+    wait_for: timeout=2
+  - name: Start IPOP
+    service:
+      name: ipop
+      state: started

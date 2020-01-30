@@ -1,0 +1,12 @@
+{
+  "OverlayId": "190911",
+  "BridgeName": "ipopbr190911",
+  "DemandThreshold": "100M",
+  "LogFilename": "/var/log/ipop-vpn/bf.log",
+  "LogLevel": "INFO",
+  "MaxBytes": 10000000,
+  "BackupCount": 0,
+  "SdniPort": 5802,
+  "MonitorInterval": 60,
+  "EnableOnDemandTunnels": true
+}
